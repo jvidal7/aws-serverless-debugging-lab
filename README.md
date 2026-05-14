@@ -79,9 +79,7 @@ This is the architectural diagram for the project.
 
 ### Screenshot
 
-```md
 ![AWS Serverless Architecture Diagram](images/aws-serverless-architecture.png)
-```
 
 ---
 
