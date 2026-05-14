@@ -37,7 +37,7 @@ We will diagnose the issue by tracing the flow of data and identifying where the
 
 As a Cloud Support Engineer, your responsibility is to identify and resolve issues in production serverless workflows.
 
-In this project, you'll simulate a real-world support ticket by investigating a broken contact form integration. You’ll:
+In this project, I simulate a real-world support ticket by investigating a broken contact form integration. You’ll:
 
 - Explore CloudWatch logs for Lambda functions
 - Verify API Gateway configuration
@@ -45,13 +45,11 @@ In this project, you'll simulate a real-world support ticket by investigating a 
 - Check DynamoDB table functionality
 - Validate SNS subscription health
 
-This project will strengthen your understanding of how AWS services interact while helping you build practical debugging and troubleshooting skills used in real cloud environments.
-
 ---
 
 # 👩‍💻 Steps to be Performed
 
-In the next few lessons, we’ll complete the following tasks:
+In the next few lessons, I will complete the following tasks:
 
 1. Deploy the Broken CloudFormation Stack  
 2. Reproduce the Contact Form Issue  
@@ -72,13 +70,6 @@ In the next few lessons, we’ll complete the following tasks:
 | Amazon SNS | Sends email notifications to the support team |
 | Amazon CloudWatch | Monitors Lambda execution and logs errors |
 | AWS IAM | Controls permissions between AWS services |
-
----
-
-# ⚙️ Estimated Time & Cost
-
-- **Estimated Time:** 60–90 Minutes  
-- **Estimated Cost:** Free (AWS Free Tier Eligible)  
 
 ---
 
