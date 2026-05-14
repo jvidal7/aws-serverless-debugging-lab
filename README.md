@@ -48,7 +48,6 @@ In this project, I simulate a real-world support ticket by investigating a broke
 ---
 
 # 👩‍💻 Steps to be Performed
-
 In the next few lessons, I will complete the following tasks:
 
 1. Deploy the Broken CloudFormation Stack  
@@ -61,7 +60,6 @@ In the next few lessons, I will complete the following tasks:
 ---
 
 # 🛠 Services Used
-
 | AWS Service | Purpose |
 |---|---|
 | Amazon API Gateway | Exposes the contact form as an HTTP endpoint |
@@ -74,11 +72,9 @@ In the next few lessons, I will complete the following tasks:
 ---
 
 # ➡️ Diagram
-
 This is the architectural diagram for the project.
 
 ### Screenshot
-
 ![AWS Serverless Architecture Diagram](images/aws-serverless-architecture.png)
 
 ---
