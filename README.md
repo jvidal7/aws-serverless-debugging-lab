@@ -75,7 +75,7 @@ In the next few lessons, I will complete the following tasks:
 This is the architectural diagram for the project.
 
 ### Screenshot
-![AWS Serverless Architecture Diagram](images/aws-serverless-architecture.png)
+![AWS Serverless Architecture Diagram](images/aws-serverless-architecture.gif)
 
 ---
 
