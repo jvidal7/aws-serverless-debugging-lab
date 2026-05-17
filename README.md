@@ -1,4 +1,4 @@
-# aws-serverless-debugging-lab
+<img width="1919" height="885" alt="image" src="https://github.com/user-attachments/assets/c5f0bce1-e8d6-4515-a2b2-cd68fd9b9935" /># aws-serverless-debugging-lab
 Debugging and restoring a broken AWS serverless contact form workflow using API Gateway, Lambda, DynamoDB, SNS, CloudWatch, and IAM. This project focuses on troubleshooting distributed cloud services, resolving permission issues, analyzing logs, and restoring production functionality.
 
 # Overview of Project
@@ -35,9 +35,9 @@ We will diagnose the issue by tracing the flow of data and identifying where the
 
 ## About Project
 
-As a Cloud Support Engineer, your responsibility is to identify and resolve issues in production serverless workflows.
+As a Cloud Support Engineer, my responsibility is to identify and resolve issues in production serverless workflows.
 
-In this project, I simulate a real-world support ticket by investigating a broken contact form integration. You’ll:
+In this project, I simulate a real-world support ticket by investigating a broken contact form integration. I’ll:
 
 - Explore CloudWatch logs for Lambda functions
 - Verify API Gateway configuration
@@ -88,7 +88,7 @@ A fully functional serverless contact form workflow that demonstrates:
 - Fixing permission issues and SNS subscription confirmation problems  
 - Writing a professional support response documenting the root cause and resolution  
 
-This project gives you hands-on troubleshooting experience across multiple AWS services — essential knowledge for any Cloud Support Engineer working in a production support role.
+This project gave me hands-on troubleshooting experience across multiple AWS services — essential knowledge for any Cloud Support Engineer working in a production support role.
 
 ---
 
@@ -96,7 +96,7 @@ This project gives you hands-on troubleshooting experience across multiple AWS s
 
 ## Introduction
 
-In this section, we will deploy a CloudFormation stack containing intentionally broken serverless components. This setup simulates a real-world troubleshooting scenario where a production contact form workflow is failing.
+In this section, I will deploy a CloudFormation stack containing intentionally broken serverless components. This setup simulates a real-world troubleshooting scenario where a production contact form workflow is failing.
 
 The stack will create the following AWS resources:
 
@@ -110,21 +110,11 @@ The environment is intentionally misconfigured so we can investigate and resolve
 
 ---
 
-# 📋 Prerequisites
-
-Before starting, ensure you have:
-
-- An active AWS account with permissions to create resources
-- Access to the AWS Management Console
-- A valid email address for SNS notifications
-
----
-
 # 👩‍💻 Step 1: Creating the CloudFormation Stack
 
 ### 1. Download the CloudFormation Template
 
-Download the template file:
+I would download the template file:
 
 ```bash
 Broken-contact-form.yml
@@ -132,23 +122,18 @@ Broken-contact-form.yml
 
 ### Screenshot
 
-```md
 ![CloudFormation Template Download](images/template-download.png)
-```
 
 ---
 
 ### 2. Navigate to AWS CloudFormation
 
-1. Open the AWS Console
+1. I will open the AWS Console
 2. Search for **CloudFormation**
 3. Open the CloudFormation service dashboard
 
 ### Screenshot
-
-```md
 ![AWS CloudFormation Console](images/cloudformation-console.png)
-```
 
 ---
 
@@ -161,9 +146,7 @@ Broken-contact-form.yml
 
 ### Screenshot
 
-```md
 ![Create CloudFormation Stack](images/create-stack.png)
-```
 
 ---
 
@@ -171,7 +154,7 @@ Broken-contact-form.yml
 
 ### Configure Stack Name
 
-Enter the following stack name:
+I would enter the following stack name:
 
 ```bash
 broken-contact-form
@@ -181,20 +164,17 @@ broken-contact-form
 
 Under the **EmailAddress** parameter:
 
-- Replace the default value with your personal email address
-- Example:
+- I Replaced the default value with my personal email address
 
 ```bash
-your-name@example.com
+jorgev192@gmail.com
 ```
 
 This email address will later receive SNS notifications from the contact form system. 
 
 ### Screenshot
 
-```md
 ![Specify Stack Details](images/specify-stack-details.png)
-```
 
 ---
 
@@ -202,7 +182,7 @@ This email address will later receive SNS notifications from the contact form sy
 
 ### Review Stack Configuration
 
-1. Leave all default settings unchanged
+1. I would leave all default settings unchanged
 2. Scroll to the **Capabilities** section
 3. Check the acknowledgment box:
 
@@ -216,9 +196,7 @@ The CloudFormation template creates IAM roles that allow Lambda to interact with
 
 ### Screenshot
 
-```md
 ![CloudFormation IAM Capabilities](images/iam-capabilities.png)
-```
 
 ---
 
@@ -268,21 +246,16 @@ These problems will be diagnosed and fixed later in the project.
 
 ### Verify Deployment Status
 
-1. Navigate to the **Events** tab
-2. Monitor resource creation progress
-3. Wait until the stack status changes to:
+1. I then Navigate to the **Events** tab
+2. And Monitor resource creation progress
+3. I Wait until the stack status changes to:
 
 ```bash
 CREATE_COMPLETE
 ```
 
-Deployment typically takes **5–10 minutes**.
-
 ### Screenshot
-
-```md
 ![CloudFormation Events Tab](images/cloudformation-events.png)
-```
 
 ---
 
@@ -290,7 +263,7 @@ Deployment typically takes **5–10 minutes**.
 
 Once deployment completes:
 
-1. Open the **Outputs** tab
+1. I then open the **Outputs** tab
 2. Record the following values:
 
 | Output | Description |
@@ -300,13 +273,10 @@ Once deployment completes:
 | DynamoDBTable | DynamoDB table name |
 | SNSTopic | SNS Topic ARN |
 
-These values will be used throughout the troubleshooting process. 
+These values will be recorded throughout the troubleshooting process. 
 
 ### Screenshot
-
-```md
 ![CloudFormation Outputs](images/cloudformation-outputs.png)
-```
 
 ---
 
