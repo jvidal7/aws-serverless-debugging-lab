@@ -47,7 +47,7 @@ In this project, I simulate a real-world support ticket by investigating a broke
 
 ---
 
-# 👩‍💻 Steps to be Performed
+# Steps to be Performed
 In the next few lessons, I will complete the following tasks:
 
 1. Deploy the Broken CloudFormation Stack  
@@ -59,7 +59,7 @@ In the next few lessons, I will complete the following tasks:
 
 ---
 
-# 🛠 Services Used
+# Services Used
 | AWS Service | Purpose |
 |---|---|
 | Amazon API Gateway | Exposes the contact form as an HTTP endpoint |
@@ -71,7 +71,7 @@ In the next few lessons, I will complete the following tasks:
 
 ---
 
-# ➡️ Diagram
+# Diagram
 This is the architectural diagram for the project.
 
 ### Screenshot
@@ -79,7 +79,7 @@ This is the architectural diagram for the project.
 
 ---
 
-# ✅ Final Result
+# Final Result
 
 A fully functional serverless contact form workflow that demonstrates:
 
@@ -92,7 +92,7 @@ This project gave me hands-on troubleshooting experience across multiple AWS ser
 
 ---
 
-# ☁️ 4.2 Deploying the Broken CloudFormation Stack
+# 4.2 Deploying the Broken CloudFormation Stack
 
 ## Introduction
 
@@ -110,7 +110,7 @@ The environment is intentionally misconfigured so we can investigate and resolve
 
 ---
 
-# 👩‍💻 Step 1: Creating the CloudFormation Stack
+# Step 1: Creating the CloudFormation Stack
 
 ### 1. Download the CloudFormation Template
 
@@ -150,7 +150,7 @@ Broken-contact-form.yml
 
 ---
 
-# ⚙️ Step 2: Specify Stack Details
+# Step 2: Specify Stack Details
 
 ### Configure Stack Name
 
@@ -277,7 +277,7 @@ These values will be recorded throughout the troubleshooting process.
 
 ---
 
-# 📧 Step 7: Verify Email Subscription
+# Step 7: Verify Email Subscription
 
 ### SNS Subscription Confirmation
 
@@ -294,7 +294,7 @@ AWS Notification - Subscription Confirmation
 
 ---
 
-# 🔍 Step 8: Verify AWS Resources
+# Step 8: Verify AWS Resources
 
 ## Check Lambda Function
 
@@ -371,12 +371,11 @@ ContactFormApi
 
 ---
 
-# ⚠️ Understanding the Broken Components
+# Understanding the Broken Components
 
 The deployed architecture contains several intentional issues.
 
 ## 1. Missing IAM Permissions
-
 The Lambda function lacks permissions to:
 
 - Write to DynamoDB
@@ -387,19 +386,16 @@ Without the correct IAM policies, services cannot communicate successfully.
 ---
 
 ## 2. Unconfirmed SNS Subscription
-
 SNS email subscriptions require manual confirmation before notifications can be delivered.
 
 ---
 
 ## 3. Lambda Code Issues
-
 The Lambda function contains logic errors that may prevent proper execution even if permissions are corrected. 
 
 ---
 
-# ✅ Next Steps
-
+# Next Steps
 With the broken CloudFormation stack successfully deployed, the environment is now ready for troubleshooting.
 
 In the next section, I will:
