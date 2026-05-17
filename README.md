@@ -1,4 +1,4 @@
-<img width="1919" height="885" alt="image" src="https://github.com/user-attachments/assets/c5f0bce1-e8d6-4515-a2b2-cd68fd9b9935" /># aws-serverless-debugging-lab
+# aws-serverless-debugging-lab
 Debugging and restoring a broken AWS serverless contact form workflow using API Gateway, Lambda, DynamoDB, SNS, CloudWatch, and IAM. This project focuses on troubleshooting distributed cloud services, resolving permission issues, analyzing logs, and restoring production functionality.
 
 # Overview of Project
