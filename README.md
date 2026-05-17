@@ -209,10 +209,7 @@ The CloudFormation template creates IAM roles that allow Lambda to interact with
 3. Wait for deployment to begin
 
 ### Screenshot
-
-```md
 ![Review and Submit Stack](images/review-submit-stack.png)
-```
 
 ---
 
@@ -284,7 +281,7 @@ These values will be recorded throughout the troubleshooting process.
 
 ### SNS Subscription Confirmation
 
-1. Check your inbox or spam folder
+1. I would then check my inbox
 2. Locate the AWS notification email
 3. Subject line:
 
@@ -292,15 +289,8 @@ These values will be recorded throughout the troubleshooting process.
 AWS Notification - Subscription Confirmation
 ```
 
-### Important
-
-Do **NOT** confirm the subscription yet. You will revisit this later while troubleshooting SNS delivery issues.
-
 ### Screenshot
-
-```md
 ![SNS Subscription Email](images/sns-subscription-email.png)
-```
 
 ---
 
@@ -322,10 +312,7 @@ ContactFormProcessor
    - Environment variables
 
 ### Screenshot
-
-```md
 ![Lambda Function Verification](images/lambda-verification.png)
-```
 
 ---
 
@@ -343,9 +330,7 @@ ContactFormSubmissions
 
 ### Screenshot
 
-```md
 ![DynamoDB Table Verification](images/dynamodb-table.png)
-```
 
 ---
 
@@ -363,9 +348,7 @@ ContactFormNotifications
 
 ### Screenshot
 
-```md
 ![SNS Topic Verification](images/sns-topic.png)
-```
 
 ---
 
@@ -384,9 +367,7 @@ ContactFormApi
 
 ### Screenshot
 
-```md
 ![API Gateway Verification](images/api-gateway.png)
-```
 
 ---
 
@@ -421,8 +402,7 @@ The Lambda function contains logic errors that may prevent proper execution even
 
 With the broken CloudFormation stack successfully deployed, the environment is now ready for troubleshooting.
 
-In the next section, we will:
-
+In the next section, I will:
 - Reproduce the contact form issue
 - Test the API endpoint
 - Investigate failures using CloudWatch Logs
