@@ -415,7 +415,7 @@ As part of the troubleshooting process, I needed to confirm exactly how the syst
 
 ---
 
-# 👩‍💻 Step 1: Accessing API Gateway
+# Step 1: Accessing API Gateway
 
 To begin troubleshooting, I first verified that the API Gateway configuration was correctly connected to the Lambda function.
 
@@ -450,7 +450,7 @@ I also checked the **Stages** section and confirmed that the **Invoke URL** matc
 
 ---
 
-# 🧪 Step 2: Testing the Contact Form API
+# Step 2: Testing the Contact Form API
 
 Next, I used the built-in API Gateway test feature to simulate a contact form submission.
 
@@ -485,7 +485,7 @@ After entering the JSON payload:
 
 ---
 
-# 📄 Step 3: Documenting the API Response
+# Step 3: Documenting the API Response
 
 After testing the API, I documented the results to better understand the failure.
 
@@ -510,7 +510,7 @@ This suggested that the backend processing layer was encountering issues.
 
 ---
 
-# 🗄 Step 4: Verifying DynamoDB Entries
+# Step 4: Verifying DynamoDB Entries
 
 Next, I checked whether the contact form data was successfully stored in DynamoDB.
 
@@ -544,7 +544,7 @@ This confirmed that the Lambda function failed to write data into DynamoDB.
 
 ---
 
-# 📧 Step 5: Checking SNS Email Notifications
+# Step 5: Checking SNS Email Notifications
 
 After testing DynamoDB, I verified whether Amazon SNS successfully delivered email notifications.
 
@@ -563,7 +563,7 @@ This confirmed that the SNS notification workflow was also failing.
 
 ---
 
-# ⚡ Step 6: Verifying Lambda Function Invocation
+# Step 6: Verifying Lambda Function Invocation
 
 To confirm whether API Gateway successfully triggered Lambda, I inspected the Lambda monitoring metrics.
 
@@ -596,7 +596,7 @@ This narrowed the issue down to the Lambda layer instead of API Gateway configur
 
 ---
 
-# 📝 Step 7: Recording All Symptoms
+# Step 7: Recording All Symptoms
 
 After completing testing across all services, I compiled the following observations.
 
@@ -611,7 +611,7 @@ After completing testing across all services, I compiled the following observati
 ```
 ---
 
-# 🧠 Step 8: Formulating Initial Hypotheses
+# Step 8: Formulating Initial Hypotheses
 
 Based on the symptoms observed, I developed several possible explanations for the failures.
 
@@ -628,7 +628,7 @@ Creating hypotheses helped guide the troubleshooting process systematically inst
 
 ---
 
-# ✅ Next Steps
+# Next Steps
 
 With the contact form issues successfully reproduced and documented, the next step will be to investigate the Lambda function logs using Amazon CloudWatch.
 
