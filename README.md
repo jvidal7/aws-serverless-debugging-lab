@@ -403,3 +403,233 @@ In the next section, I will:
 - Test the API endpoint
 - Investigate failures using CloudWatch Logs
 - Begin identifying the root cause
+
+---
+
+# ☁️ 4.3 Reproducing and Documenting the Contact Form Issue
+
+## Introduction
+
+In this section, I tested the deployed serverless infrastructure to reproduce and document the issues affecting the contact form workflow.
+As part of the troubleshooting process, I needed to confirm exactly how the system was failing before attempting any fixes. I used AWS services such as API Gateway, DynamoDB, Lambda, and CloudWatch to trace the request flow and identify where the failures occurred. 
+
+---
+
+# 👩‍💻 Step 1: Accessing API Gateway
+
+To begin troubleshooting, I first verified that the API Gateway configuration was correctly connected to the Lambda function.
+
+## Actions Performed
+
+1. Opened the AWS Management Console
+2. Searched for **API Gateway**
+3. Opened the API named:
+
+```bash
+ContactFormApi
+```
+
+4. Navigated to:
+
+```bash
+Resources → /submit → POST
+```
+
+5. Verified that the POST method was integrated with the Lambda function
+
+This confirmed that API Gateway was successfully configured to forward requests to Lambda.
+
+---
+
+## Verified API Endpoint
+
+I also checked the **Stages** section and confirmed that the **Invoke URL** matched the API URL generated from the CloudFormation outputs.
+
+### Screenshot
+![API Gateway Verification](images/api-gateway-verification.png)
+
+---
+
+# 🧪 Step 2: Testing the Contact Form API
+
+Next, I used the built-in API Gateway test feature to simulate a contact form submission.
+
+## Request Body Used
+
+```json
+{
+  "name": "Test User",
+  "email": "test@example.com",
+  "message": "This is a test message from API Gateway console"
+}
+```
+
+The Lambda function expected these exact fields:
+
+- name
+- email
+- message
+
+---
+
+## Running the Test
+
+After entering the JSON payload:
+
+1. I clicked the **Test** button
+2. Waited for the API response
+3. Reviewed the returned status code and response body
+
+### Screenshot
+![API Gateway Test](images/api-gateway-test.png)
+
+---
+
+# 📄 Step 3: Documenting the API Response
+
+After testing the API, I documented the results to better understand the failure.
+
+## Test Results
+
+```bash
+Status Code: 502
+Response Body: {"message":"Internal server error"}
+Request Duration: 1289 ms
+```
+
+## Observations
+
+- The API returned an internal server error
+- The request successfully reached API Gateway
+- The failure likely occurred during Lambda execution
+
+This suggested that the backend processing layer was encountering issues.
+
+### Screenshot
+![API Error Response](images/api-error-response.png)
+
+---
+
+# 🗄 Step 4: Verifying DynamoDB Entries
+
+Next, I checked whether the contact form data was successfully stored in DynamoDB.
+
+## Actions Performed
+
+1. Opened the DynamoDB Console
+2. Navigated to:
+
+```bash
+Tables → ContactFormSubmissions
+```
+
+3. Opened:
+
+```bash
+Explore table items
+```
+
+4. Checked for newly created records
+
+---
+
+## Findings
+
+I did not see any new records inside the table.
+
+This confirmed that the Lambda function failed to write data into DynamoDB.
+
+### Screenshot
+![DynamoDB Empty Table](images/dynamodb-empty-table.png)
+
+---
+
+# 📧 Step 5: Checking SNS Email Notifications
+
+After testing DynamoDB, I verified whether Amazon SNS successfully delivered email notifications.
+
+## Actions Performed
+
+1. Checked my inbox and spam folder
+2. Looked for AWS SNS notification emails related to the test message
+
+---
+
+## Findings
+
+No notification emails were received after submitting the contact form.
+
+This confirmed that the SNS notification workflow was also failing.
+
+---
+
+# ⚡ Step 6: Verifying Lambda Function Invocation
+
+To confirm whether API Gateway successfully triggered Lambda, I inspected the Lambda monitoring metrics.
+
+## Actions Performed
+
+1. Opened the AWS Lambda Console
+2. Selected the function:
+
+```bash
+ContactFormProcessor
+```
+
+3. Opened the **Monitor** tab
+4. Reviewed invocation metrics and CloudWatch Logs
+
+---
+
+## Findings
+
+I confirmed that:
+
+- API Gateway successfully invoked the Lambda function
+- Lambda execution was failing during runtime
+- CloudWatch Logs contained execution errors
+
+This narrowed the issue down to the Lambda layer instead of API Gateway configuration.
+
+### Screenshot
+![Lambda Monitor Tab](images/lambda-monitor.png)
+
+---
+
+# 📝 Step 7: Recording All Symptoms
+
+After completing testing across all services, I compiled the following observations.
+
+## Contact Form Issue Symptoms
+
+```bash
+1. API Gateway returned a 502 Internal Server Error
+2. No new DynamoDB entries were created
+3. No SNS email notifications were received
+4. API Gateway configuration appeared correct
+5. Lambda function was triggered but failed during execution
+```
+---
+
+# 🧠 Step 8: Formulating Initial Hypotheses
+
+Based on the symptoms observed, I developed several possible explanations for the failures.
+
+## Potential Root Causes
+
+```bash
+1. Lambda function may have insufficient IAM permissions
+2. SNS subscription may not be configured correctly
+3. Lambda function may contain code issues
+4. Environment variables may be incorrectly configured
+```
+
+Creating hypotheses helped guide the troubleshooting process systematically instead of relying on random trial and error.
+
+---
+
+# ✅ Next Steps
+
+With the contact form issues successfully reproduced and documented, the next step will be to investigate the Lambda function logs using Amazon CloudWatch.
+
+This will help identify the exact runtime errors causing the workflow failures.
