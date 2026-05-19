@@ -6,7 +6,7 @@ This project focuses on troubleshooting distributed cloud services, resolving IA
 
 ---
 
-# ☁️ Overview of Project
+# Overview of Project
 
 ## Scenario
 
@@ -26,7 +26,7 @@ As a result of the outage, the company missed several important client messages,
 
 ---
 
-# 🛠 Our Solution
+# Our Solution
 
 In this project, I take the role of a Cloud Support Engineer responsible for investigating and restoring the broken serverless workflow.
 
@@ -48,7 +48,7 @@ The final solution successfully restored:
 
 ---
 
-# 📘 About the Project
+# About the Project
 
 As a Cloud Support Engineer, my responsibility is to diagnose and resolve issues affecting production cloud workloads.
 
@@ -65,7 +65,7 @@ During the investigation, I:
 
 ---
 
-# 👩‍💻 Steps Performed
+# Steps Performed
 
 Throughout this project, I completed the following tasks:
 
