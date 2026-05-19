@@ -1,61 +1,83 @@
 # aws-serverless-debugging-lab
-Debugging and restoring a broken AWS serverless contact form workflow using API Gateway, Lambda, DynamoDB, SNS, CloudWatch, and IAM. This project focuses on troubleshooting distributed cloud services, resolving permission issues, analyzing logs, and restoring production functionality.
 
-# Overview of Project
+Debugging and restoring a broken AWS serverless contact form workflow using API Gateway, Lambda, DynamoDB, SNS, CloudWatch, and IAM.
+
+This project focuses on troubleshooting distributed cloud services, resolving IAM permission issues, analyzing CloudWatch logs, identifying Lambda runtime failures, and restoring full production functionality within a serverless AWS architecture.
+
+---
+
+# ☁️ Overview of Project
 
 ## Scenario
 
-A media company recently reported a critical issue in their production environment. Their contact form, previously working fine, has suddenly stopped sending email notifications and storing messages in their database. This contact form is part of a serverless architecture using:
+A media company recently reported a critical issue in their production environment. Their contact form, which previously worked correctly, suddenly stopped:
 
-- Amazon API Gateway  
-- AWS Lambda  
-- Amazon DynamoDB  
-- Amazon SNS  
+- Sending email notifications
+- Storing customer submissions in the database
 
-Since the issue started, the company has missed several important client messages, risking customer trust and reputation.
+The contact form is built using a serverless AWS architecture consisting of:
 
----
+- Amazon API Gateway
+- AWS Lambda
+- Amazon DynamoDB
+- Amazon SNS
 
-## Our Solution
-
-We’ll take the role of a **Cloud Support Engineer** and investigate the broken serverless workflow.
-
-Using AWS tools such as:
-
-- Amazon CloudWatch  
-- AWS IAM  
-- AWS Console  
-
-We will diagnose the issue by tracing the flow of data and identifying where the failure occurs. After identifying the root cause, we’ll apply fixes to restore full functionality, ensuring that:
-
-- Form submissions are successfully stored in DynamoDB  
-- Email notifications are properly sent through SNS  
+As a result of the outage, the company missed several important client messages, creating operational risk and negatively impacting customer trust.
 
 ---
 
-## About Project
+# 🛠 Our Solution
 
-As a Cloud Support Engineer, my responsibility is to identify and resolve issues in production serverless workflows.
+In this project, I take the role of a Cloud Support Engineer responsible for investigating and restoring the broken serverless workflow.
 
-In this project, I simulate a real-world support ticket by investigating a broken contact form integration. I’ll:
+Using AWS services and troubleshooting tools such as:
 
-- Explore CloudWatch logs for Lambda functions
-- Verify API Gateway configuration
-- Review IAM permissions and policies
-- Check DynamoDB table functionality
-- Validate SNS subscription health
+- Amazon CloudWatch
+- AWS IAM
+- AWS Management Console
+
+I traced the full request flow, identified the root causes, and applied fixes to restore functionality across the environment.
+
+The final solution successfully restored:
+
+```bash
+✓ DynamoDB form submission storage
+✓ SNS email notifications
+✓ End-to-end serverless workflow functionality
+```
 
 ---
 
-# Steps to be Performed
-In the next few lessons, I will complete the following tasks:
+# 📘 About the Project
 
-1. Deploy the Broken CloudFormation Stack  
-2. Reproduce the Contact Form Issue  
-3. Investigate the Lambda Logs  
-4. Trace and Verify the Full Architecture  
-5. Apply Fixes to Restore Functionality  
-6. Write a Professional Support Response  
+As a Cloud Support Engineer, my responsibility is to diagnose and resolve issues affecting production cloud workloads.
+
+In this project, I simulated a real-world support investigation by troubleshooting a broken contact form integration and validating communication between multiple AWS services.
+
+During the investigation, I:
+
+- Explored CloudWatch Logs for Lambda execution errors
+- Verified API Gateway configuration and integrations
+- Reviewed IAM permissions and policies
+- Validated DynamoDB table functionality
+- Confirmed SNS subscription health
+- Applied fixes and re-tested the complete workflow
+
+---
+
+# 👩‍💻 Steps Performed
+
+Throughout this project, I completed the following tasks:
+
+```bash
+1. Deploy the Broken CloudFormation Stack
+2. Reproduce the Contact Form Issue
+3. Investigate Lambda Logs
+4. Trace and Verify the Full Architecture
+5. Apply Fixes to Restore Functionality
+6. Validate End-to-End Workflow Recovery
+7. Document Root Cause and Resolution
+```
 
 ---
 
