@@ -936,13 +936,11 @@ This includes:
 
 ---
 
-# ☁️ 4.5 Tracing and Verifying the Full Architecture
+# 4.5 Tracing and Verifying the Full Architecture
 
 ## Introduction
 
-In this section, I performed a full end-to-end analysis of the serverless architecture to identify every point of failure affecting the contact form workflow.
-
-By systematically reviewing each AWS service and verifying how they interacted with one another, I was able to build a complete picture of the architecture and identify the configuration, dependency, and permission issues preventing the application from functioning correctly.
+In this section, I performed a full end-to-end analysis of the serverless architecture to identify every point of failure affecting the contact form workflow. By systematically reviewing each AWS service and verifying how they interacted with one another, I was able to build a complete picture of the architecture and identify the configuration, dependency, and permission issues preventing the application from functioning correctly.
 ---
 
 # Step 1: Reviewing the Serverless Architecture
