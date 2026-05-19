@@ -914,3 +914,326 @@ This includes:
 
 ---
 
+# ☁️ 4.5 Tracing and Verifying the Full Architecture
+
+## Introduction
+
+In this section, I performed a full end-to-end analysis of the serverless architecture to identify every point of failure affecting the contact form workflow.
+
+By systematically reviewing each AWS service and verifying how they interacted with one another, I was able to build a complete picture of the architecture and identify the configuration, dependency, and permission issues preventing the application from functioning correctly.
+---
+
+# 🏗 Step 1: Reviewing the Serverless Architecture
+
+Before troubleshooting each service individually, I mapped out how the architecture was expected to function.
+
+## Expected Workflow
+
+```bash
+1. Client submits form data to API Gateway
+2. API Gateway forwards the request to Lambda
+3. Lambda processes the request
+4. Lambda writes form data into DynamoDB
+5. Lambda publishes a notification to SNS
+6. SNS sends an email notification to subscribers
+```
+
+This helped me identify every stage where failures could occur within the workflow.
+
+### Screenshot
+![Serverless Architecture Diagram](images/serverless-architecture-diagram.png)
+
+---
+
+# 🌐 Step 2: Verifying API Gateway Configuration
+
+I first verified that API Gateway was properly configured and correctly integrated with Lambda.
+
+## Actions Performed
+
+1. Opened the API Gateway Console
+2. Selected:
+
+```bash
+ContactFormApi
+```
+
+3. Verified:
+   - `/submit` resource existed
+   - POST method existed
+   - Integration type was set to Lambda Function
+   - Lambda target was `ContactFormProcessor`
+
+---
+
+## Method Request Verification
+
+I also reviewed the Method Request configuration and confirmed:
+
+- Authorization = NONE
+- No API key required
+- No request validators enabled
+
+This confirmed the API endpoint was publicly accessible and properly configured.
+
+### Screenshot
+![API Gateway Method Configuration](images/api-gateway-method-config.png)
+
+---
+
+## API Deployment Verification
+
+Next, I reviewed the deployment stage configuration.
+
+## Findings
+
+- Verified the `prod` stage existed
+- Confirmed the API was successfully deployed
+- Verified the Invoke URL matched the CloudFormation outputs
+
+### Screenshot
+![API Gateway Stage Verification](images/api-gateway-stage-verification.png)
+
+---
+
+# 🗄 Step 3: Verifying DynamoDB Configuration
+
+Next, I reviewed the DynamoDB table configuration used for storing contact form submissions.
+
+## Table Verification
+
+I verified the following table settings:
+
+```bash
+Table Name: ContactFormSubmissions
+Table Status: Active
+Primary Key: id (String)
+Capacity Mode: On-demand
+```
+
+These settings matched the requirements expected by the Lambda function.
+
+### Screenshot
+![DynamoDB Table Configuration](images/dynamodb-table-config.png)
+
+---
+
+## Verifying Table Items
+
+I then scanned the table for submitted records.
+
+## Findings
+
+The table returned zero items, confirming that Lambda was not successfully writing records into DynamoDB.
+
+### Screenshot
+![DynamoDB Empty Table](images/dynamodb-empty-table2.png)
+
+---
+
+# 📧 Step 4: Verifying SNS Topic and Subscription
+
+I reviewed the SNS topic configuration and subscription status.
+
+## SNS Topic Verification
+
+I verified:
+
+```bash
+Topic Name: ContactFormNotifications
+Display Name: Contact Form
+```
+
+I also confirmed the SNS Topic ARN matched the environment variable configured inside Lambda.
+
+### Screenshot
+![SNS Topic Verification](images/sns-topic-verification.png)
+
+---
+
+## Subscription Status Verification
+
+I reviewed the SNS subscription details and confirmed the email subscription configuration.
+
+## Findings
+
+```bash
+Protocol: Email
+Endpoint: Configured email address
+Status: Confirmed
+```
+
+Since I had already confirmed the SNS subscription earlier in the lab, email delivery issues would likely be related to Lambda execution failures rather than SNS subscription status.
+
+### Screenshot
+![SNS Subscription Status](images/sns-subscription-status.png)
+
+---
+
+# 🔐 Step 5: Analyzing IAM Role Permissions
+
+Next, I reviewed the Lambda execution role permissions.
+
+## Actions Performed
+
+1. Opened Lambda Configuration → Permissions
+2. Opened the IAM execution role
+3. Reviewed attached policies
+
+---
+
+## Findings
+
+The Lambda function only had the following managed policy attached:
+
+```bash
+AWSLambdaBasicExecutionRole
+```
+
+This policy only allowed:
+
+- Writing logs to CloudWatch
+
+The role was missing permissions for:
+
+```bash
+dynamodb:PutItem
+sns:Publish
+```
+
+This confirmed the Lambda function lacked permissions required to:
+
+- Write records into DynamoDB
+- Publish notifications to SNS
+
+### Screenshot
+![Lambda IAM Permissions](images/lambda-iam-permissions.png)
+
+---
+
+## Missing Permissions Identified
+
+```bash
+1. DynamoDB Permissions
+   - Action: dynamodb:PutItem
+   - Resource: ContactFormSubmissions table
+
+2. SNS Permissions
+   - Action: sns:Publish
+   - Resource: ContactFormNotifications topic
+```
+
+---
+
+# 📦 Step 6: Reviewing Lambda Dependencies
+
+I returned to the Lambda function code to investigate dependency-related issues.
+
+## Findings
+
+Inside the code, I identified the following dependency:
+
+```javascript
+const { v4: uuidv4 } = require('uuid');
+```
+
+However, the `uuid` package was not included in the Lambda deployment package.
+
+This directly matched the CloudWatch error:
+
+```bash
+Error: Cannot find module 'uuid'
+```
+
+### Screenshot
+
+```md
+![Lambda UUID Dependency](images/lambda-uuid-dependency.png)
+```
+
+---
+
+## Dependency Issue Summary
+
+```bash
+Dependency Issue:
+The Lambda function requires the 'uuid' package,
+but the dependency was not included in the deployment package.
+```
+
+---
+
+# ⚙️ Step 7: Verifying Environment Variables
+
+Next, I verified the Lambda environment variables.
+
+## Findings
+
+The following environment variable was correctly configured:
+
+```bash
+SNS_TOPIC_ARN
+```
+
+The ARN value matched the SNS topic configured earlier in the architecture.
+
+This confirmed the issue was not related to Lambda environment variables. :contentReference[oaicite:9]{index=9}
+
+### Screenshot
+
+```md
+![Lambda Environment Variables](images/lambda-environment-variables.png)
+```
+
+---
+
+# 📋 Step 8: Creating a Full Architecture Issue Report
+
+After verifying every component of the serverless workflow, I compiled a full architecture issue report.
+
+## Contact Form Architecture Issue Report
+
+```bash
+1. API Gateway Configuration
+   - Status: Correctly configured
+   - Lambda integration working properly
+   - API endpoint accessible
+
+2. Lambda Function Code
+   - Status: Dependency issue identified
+   - Missing package: uuid
+   - Impact: Lambda initialization failure
+
+3. Lambda IAM Role
+   - Status: Missing required permissions
+   - Missing dynamodb:PutItem permission
+   - Missing sns:Publish permission
+
+4. DynamoDB Table
+   - Status: Correctly configured
+   - No records inserted due to Lambda failures
+
+5. SNS Topic and Subscription
+   - Status: Correctly configured
+   - Subscription already confirmed
+
+6. Environment Variables
+   - Status: Correctly configured
+   - SNS_TOPIC_ARN value verified
+```
+
+:contentReference[oaicite:10]{index=10}
+
+---
+
+# ✅ Next Steps
+
+With all architecture issues successfully identified, the next phase will focus on applying fixes to restore full serverless functionality.
+
+This includes:
+
+- Fixing the missing Lambda dependency
+- Updating IAM permissions
+- Re-testing the API workflow
+- Verifying DynamoDB writes
+- Confirming SNS notification delivery
