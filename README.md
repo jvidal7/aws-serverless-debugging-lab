@@ -1229,3 +1229,334 @@ This includes:
 - Re-testing the API workflow
 - Verifying DynamoDB writes
 - Confirming SNS notification delivery
+
+---
+
+# ☁️ 4.6 Applying Fixes to Restore Functionality
+
+## Introduction
+
+In this section, I applied fixes to resolve the issues identified during the investigation phase and restore the full functionality of the serverless contact form workflow.
+
+The troubleshooting process involved:
+
+- Fixing IAM permission issues
+- Resolving the missing Lambda dependency
+- Verifying SNS configuration
+- Testing the complete serverless workflow end-to-end
+
+By systematically addressing each issue, I was able to successfully restore communication between API Gateway, Lambda, DynamoDB, and SNS. :contentReference[oaicite:0]{index=0}
+
+---
+
+# Step 1: Fixing IAM Permission Issues
+
+The first issue I addressed involved missing IAM permissions for the Lambda execution role.
+
+## Actions Performed
+
+1. Opened the IAM Console
+2. Located the Lambda execution role:
+
+```bash
+broken-contact-form-ContactFormRole
+```
+
+3. Clicked:
+
+```bash
+Add permissions → Create inline policy
+```
+
+4. Added permissions for:
+   - DynamoDB `PutItem`
+   - SNS `Publish`
+
+---
+
+## IAM Policy Added
+
+```json
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Action": [
+        "dynamodb:PutItem"
+      ],
+      "Resource": "arn:aws:dynamodb:us-east-1:ACCOUNT_ID:table/ContactFormSubmissions"
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
+        "sns:Publish"
+      ],
+      "Resource": "arn:aws:sns:us-east-1:ACCOUNT_ID:ContactFormNotifications"
+    }
+  ]
+}
+```
+
+This policy granted Lambda the exact permissions required to:
+
+- Write records into DynamoDB
+- Publish messages to SNS
+
+:contentReference[oaicite:1]{index=1}
+
+### Screenshot
+
+```md
+![IAM Inline Policy](images/iam-inline-policy.png)
+```
+
+---
+
+# Step 2: Verifying SNS Subscription
+
+Next, I verified the SNS subscription status to ensure notifications could be delivered successfully.
+
+## Findings
+
+The SNS subscription had already been confirmed earlier during the lab setup process.
+
+I verified that the subscription status displayed:
+
+```bash
+Confirmed
+```
+
+This confirmed SNS was fully configured to send email notifications successfully. :contentReference[oaicite:2]{index=2}
+
+### Screenshot
+
+```md
+![SNS Subscription Confirmed](images/sns-subscription-confirmed.png)
+```
+
+---
+
+# Step 3: Fixing the Lambda Dependency Issue
+
+The next issue involved the missing `uuid` package dependency inside the Lambda function.
+
+## Original Code
+
+```javascript
+const { v4: uuidv4 } = require('uuid');
+```
+
+CloudWatch Logs previously showed:
+
+```bash
+Error: Cannot find module 'uuid'
+```
+
+---
+
+## Solution Implemented
+
+Instead of relying on an external package, I replaced the dependency with a custom UUID generator function.
+
+## Updated Lambda Code
+
+```javascript
+const uuidv4 = () => {
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+    const r = Math.random() * 16 | 0;
+    const v = c === 'x' ? r : (r & 0x3 | 0x8);
+    return v.toString(16);
+  });
+};
+```
+
+This removed the external dependency while maintaining UUID generation functionality. :contentReference[oaicite:3]{index=3}
+
+### Screenshot
+
+```md
+![Lambda UUID Fix](images/lambda-uuid-fix.png)
+```
+
+---
+
+# Step 4: Deploying Lambda Code Changes
+
+After updating the Lambda function code:
+
+1. Clicked:
+
+```bash
+Deploy
+```
+
+2. Confirmed the deployment completed successfully
+
+This published the updated Lambda code and made the changes active for future API requests. :contentReference[oaicite:4]{index=4}
+
+### Screenshot
+
+```md
+![Lambda Deploy Changes](images/lambda-deploy-changes.png)
+```
+
+---
+
+# Step 5: Updating Lambda Timeout Settings
+
+To improve reliability, I increased the Lambda timeout configuration.
+
+## Actions Performed
+
+1. Opened:
+
+```bash
+Configuration → General configuration
+```
+
+2. Increased timeout value from:
+
+```bash
+3 seconds → 10 seconds
+```
+
+3. Saved the updated configuration
+
+This ensured Lambda had enough execution time to:
+
+- Write data into DynamoDB
+- Publish SNS notifications
+
+:contentReference[oaicite:5]{index=5}
+
+### Screenshot
+
+```md
+![Lambda Timeout Update](images/lambda-timeout-update.png)
+```
+
+---
+
+# Step 6: Testing the Fixed Workflow
+
+After applying all fixes, I tested the full workflow again through API Gateway.
+
+## Test Payload Used
+
+```json
+{
+  "name": "Test User",
+  "email": "test@example.com",
+  "message": "This is a test message from API Gateway console"
+}
+```
+
+---
+
+## API Gateway Results
+
+The API request completed successfully and returned:
+
+```bash
+Status Code: 200 OK
+```
+
+This confirmed the Lambda function was now processing requests successfully. :contentReference[oaicite:6]{index=6}
+
+### Screenshot
+
+```md
+![API Gateway Success Response](images/api-gateway-success-response.png)
+```
+
+---
+
+# Step 7: Verifying DynamoDB Records
+
+Next, I verified that the form submission data was successfully written into DynamoDB.
+
+## Findings
+
+Inside the `ContactFormSubmissions` table, I confirmed:
+
+- A new record was created
+- UUID values were generated correctly
+- Timestamp values were populated
+- User submission data was stored successfully
+
+This confirmed the IAM permission fix and UUID solution were working correctly. :contentReference[oaicite:7]{index=7}
+
+### Screenshot
+
+```md
+![DynamoDB Successful Insert](images/dynamodb-successful-insert.png)
+```
+
+---
+
+# Step 8: Verifying SNS Email Notifications
+
+Finally, I verified that SNS notifications were successfully delivered.
+
+## Findings
+
+I received a new email notification containing:
+
+- Name
+- Email address
+- Message content
+
+from the test contact form submission.
+
+This confirmed the SNS publish permissions and subscription configuration were functioning correctly. :contentReference[oaicite:8]{index=8}
+
+### Screenshot
+
+```md
+![SNS Email Notification](images/sns-email-notification.png)
+```
+
+---
+
+# Understanding What Was Fixed
+
+This troubleshooting exercise demonstrated several common issues found in AWS serverless architectures.
+
+## Issues Resolved
+
+```bash
+1. IAM Permission Issues
+   - Added DynamoDB PutItem permission
+   - Added SNS Publish permission
+
+2. Lambda Dependency Issues
+   - Removed external uuid package dependency
+   - Implemented custom UUID generation
+
+3. SNS Configuration
+   - Verified email subscription confirmation
+
+4. Lambda Timeout Configuration
+   - Increased execution timeout for reliability
+```
+
+These fixes successfully restored full communication between all AWS services in the architecture. :contentReference[oaicite:9]{index=9}
+
+---
+
+# Final Result
+
+After completing all fixes and validation testing, the serverless contact form workflow was fully restored.
+
+## Fully Working Components
+
+```bash
+✓ API Gateway receives requests successfully
+✓ Lambda processes submissions correctly
+✓ DynamoDB stores contact form records
+✓ SNS sends email notifications
+✓ CloudWatch logs show successful execution
+```
+
+This project provided hands-on experience troubleshooting and restoring a production-style AWS serverless application.
