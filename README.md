@@ -633,3 +633,273 @@ Creating hypotheses helped guide the troubleshooting process systematically inst
 With the contact form issues successfully reproduced and documented, the next step will be to investigate the Lambda function logs using Amazon CloudWatch.
 
 This will help identify the exact runtime errors causing the workflow failures.
+
+---
+
+# 4.4 Investigating Lambda Logs
+
+## Introduction
+
+In this section, I investigated the AWS Lambda function logs to identify the root causes of the contact form failures.
+
+Using Amazon CloudWatch Logs, I analyzed the Lambda execution behavior and reviewed runtime errors, permission issues, and configuration problems affecting the serverless workflow. This process is a critical troubleshooting skill for Cloud Support Engineers working with AWS serverless environments.
+
+---
+
+# Step 1: Accessing the Lambda Function
+
+To begin the investigation, I opened the Lambda function responsible for processing contact form submissions.
+
+## Actions Performed
+
+1. Opened the AWS Management Console
+2. Searched for **Lambda**
+3. Selected the function:
+
+```bash
+ContactFormProcessor
+```
+
+4. Reviewed the Lambda function configuration page
+
+### Screenshot
+![Lambda Function Overview](images/lambda-function-overview.png)
+
+---
+
+# Step 2: Reviewing Lambda Function Code
+
+Next, I reviewed the Lambda function source code to better understand how the application processed requests.
+
+## Findings
+
+While reviewing the code, I identified several important components:
+
+- The function used the AWS SDK to interact with DynamoDB and SNS
+- The code referenced:
+
+```javascript
+require('uuid')
+```
+
+- Environment variables were used for SNS topic configuration
+- Error handling logic was implemented within the function
+
+The `uuid` dependency immediately stood out as a possible source of failure if it was missing from the deployment package. 
+
+### Screenshot
+
+![Lambda Function Code Review](images/lambda-code-review.png)
+
+
+---
+
+# Step 3: Checking Environment Variables
+
+I then verified the Lambda environment variable configuration.
+
+## Actions Performed
+
+1. Opened the **Configuration** tab
+2. Navigated to:
+
+```bash
+Environment Variables
+```
+
+3. Verified the following variable existed:
+
+```bash
+SNS_TOPIC_ARN
+```
+
+## Findings
+
+The environment variable was configured correctly and contained the ARN for the SNS topic.
+
+This confirmed that the issue was likely unrelated to missing environment variables.
+
+### Screenshot
+![Lambda Environment Variables](images/lambda-environment-variables.png)
+
+---
+
+# Step 4: Reviewing Lambda Execution Role Permissions
+
+Next, I investigated the IAM permissions assigned to the Lambda function.
+
+## Actions Performed
+
+1. Opened the **Permissions** section
+2. Reviewed the Lambda execution role
+3. Opened the IAM role attached to the function
+
+---
+
+## Findings
+
+I observed that the Lambda function only had the following managed policy attached:
+
+```bash
+AWSLambdaBasicExecutionRole
+```
+
+This policy only grants permissions to write logs to CloudWatch.
+
+I also confirmed the role was missing permissions for:
+
+- DynamoDB
+- SNS publishing
+
+This indicated that the Lambda function would fail when attempting to:
+
+- Write records into DynamoDB
+- Publish SNS notifications
+
+### Screenshot
+![Lambda IAM Role Permissions](images/lambda-iam-role.png)
+
+---
+
+# Step 5: Accessing CloudWatch Logs
+
+To investigate runtime failures, I accessed the Lambda execution logs in Amazon CloudWatch.
+
+## Actions Performed
+
+1. Opened the **Monitor** tab
+2. Clicked:
+
+```bash
+View CloudWatch Logs
+```
+
+3. Opened the log group:
+
+```bash
+/aws/lambda/ContactFormProcessor
+```
+
+4. Selected the most recent log stream generated from my API test request
+
+### Screenshot
+![CloudWatch Lambda Logs](images/cloudwatch-lambda-logs.png)
+
+---
+
+# Step 6: Identifying Error Messages
+
+Inside the CloudWatch logs, I identified several important execution errors.
+
+## Error 1 — Missing Dependency
+
+```bash
+Error: Cannot find module 'uuid'
+```
+
+### Impact
+
+The Lambda function attempted to import the `uuid` package, but the dependency was missing from the deployment package.
+
+This caused the function to fail during initialization before processing the request fully.
+
+---
+
+## Error 2 — DynamoDB Permission Issue
+
+```bash
+AccessDeniedException:
+not authorized to perform dynamodb:PutItem
+```
+
+### Impact
+
+The Lambda execution role lacked permission to write records into DynamoDB.
+
+---
+
+## Error 3 — SNS Permission Issue
+
+```bash
+AccessDeniedException:
+not authorized to perform sns:Publish
+```
+
+### Impact
+
+The Lambda execution role also lacked permission to publish messages to Amazon SNS.
+
+---
+
+# Step 7: Documenting the Errors
+
+After reviewing the CloudWatch logs, I documented the identified issues.
+
+## Lambda Execution Errors
+
+```bash
+## Lambda Execution Errors
+
+1. Error: Cannot find module 'uuid'
+   - Operation: Creating unique ID for form submission
+   - Service: AWS Lambda dependency initialization
+   - Timestamp: 2026-05-18T23:10:23.623Z
+   - Impact: BLOCKING ERROR - Prevents Lambda function initialization
+
+2. Runtime.ImportModuleError
+   - Operation: Loading Lambda function modules
+   - Service: AWS Lambda Runtime
+   - Timestamp: 2026-05-18T23:10:23.623Z
+   - Impact: Lambda execution failed before processing the request
+
+3. INIT_REPORT Status: error
+   - Operation: Lambda initialization phase
+   - Service: AWS Lambda Runtime Environment
+   - Timestamp: 2026-05-18T23:10:23.649Z
+   - Impact: Function initialization terminated due to missing dependency
+
+4. Require stack:
+   - /var/task/index.js
+   - /var/runtime/index.mjs
+   - Service: AWS Lambda Runtime
+   - Impact: Confirms the missing module originated from the Lambda application code
+```
+
+These findings confirmed that the serverless workflow failures were caused by both dependency issues and IAM permission misconfigurations.
+
+### Screenshot
+![Lambda Error Logs](images/lambda-error-logs.png)
+
+---
+
+# Step 8: Updating My Troubleshooting Hypotheses
+
+Based on the CloudWatch investigation, I refined my original troubleshooting hypotheses.
+
+## Confirmed Issues
+
+```bash
+1. Missing Lambda dependency: uuid
+2. Missing DynamoDB write permissions
+3. Missing SNS publish permissions
+```
+
+## Additional Notes
+
+The environment variable configuration appeared correct, which helped narrow the issue down to:
+
+- Lambda packaging
+- IAM permissions
+
+---
+
+# Next Steps
+
+With the Lambda errors successfully identified, the next phase of the investigation will focus on tracing and verifying the full serverless architecture.
+
+This includes:
+
+- Verifying service integrations
+- Confirming IAM trust relationships
+- Inspecting API Gateway integrations
+- Validating SNS and DynamoDB connectivity
