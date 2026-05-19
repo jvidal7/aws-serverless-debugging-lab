@@ -1232,7 +1232,7 @@ This includes:
 
 ---
 
-# ☁️ 4.6 Applying Fixes to Restore Functionality
+# 4.6 Applying Fixes to Restore Functionality
 
 ## Introduction
 
@@ -1245,7 +1245,7 @@ The troubleshooting process involved:
 - Verifying SNS configuration
 - Testing the complete serverless workflow end-to-end
 
-By systematically addressing each issue, I was able to successfully restore communication between API Gateway, Lambda, DynamoDB, and SNS. :contentReference[oaicite:0]{index=0}
+By systematically addressing each issue, I was able to successfully restore communication between API Gateway, Lambda, DynamoDB, and SNS. 
 
 ---
 
@@ -1285,14 +1285,14 @@ Add permissions → Create inline policy
       "Action": [
         "dynamodb:PutItem"
       ],
-      "Resource": "arn:aws:dynamodb:us-east-1:ACCOUNT_ID:table/ContactFormSubmissions"
+      "Resource": "arn:aws:dynamodb:us-east-1:064341577580:table/ContactFormSubmissions"
     },
     {
       "Effect": "Allow",
       "Action": [
         "sns:Publish"
       ],
-      "Resource": "arn:aws:sns:us-east-1:ACCOUNT_ID:ContactFormNotifications"
+      "Resource": "arn:aws:sns:us-east-1:064341577580:ContactFormNotifications"
     }
   ]
 }
@@ -1303,13 +1303,8 @@ This policy granted Lambda the exact permissions required to:
 - Write records into DynamoDB
 - Publish messages to SNS
 
-:contentReference[oaicite:1]{index=1}
-
 ### Screenshot
-
-```md
 ![IAM Inline Policy](images/iam-inline-policy.png)
-```
 
 ---
 
@@ -1327,13 +1322,10 @@ I verified that the subscription status displayed:
 Confirmed
 ```
 
-This confirmed SNS was fully configured to send email notifications successfully. :contentReference[oaicite:2]{index=2}
+This confirmed SNS was fully configured to send email notifications successfully.
 
 ### Screenshot
-
-```md
 ![SNS Subscription Confirmed](images/sns-subscription-confirmed.png)
-```
 
 ---
 
@@ -1371,13 +1363,10 @@ const uuidv4 = () => {
 };
 ```
 
-This removed the external dependency while maintaining UUID generation functionality. :contentReference[oaicite:3]{index=3}
+This removed the external dependency while maintaining UUID generation functionality. 
 
 ### Screenshot
-
-```md
 ![Lambda UUID Fix](images/lambda-uuid-fix.png)
-```
 
 ---
 
@@ -1393,13 +1382,10 @@ Deploy
 
 2. Confirmed the deployment completed successfully
 
-This published the updated Lambda code and made the changes active for future API requests. :contentReference[oaicite:4]{index=4}
+This published the updated Lambda code and made the changes active for future API requests.
 
 ### Screenshot
-
-```md
 ![Lambda Deploy Changes](images/lambda-deploy-changes.png)
-```
 
 ---
 
@@ -1418,7 +1404,7 @@ Configuration → General configuration
 2. Increased timeout value from:
 
 ```bash
-3 seconds → 10 seconds
+3 seconds → 15 seconds
 ```
 
 3. Saved the updated configuration
@@ -1428,13 +1414,10 @@ This ensured Lambda had enough execution time to:
 - Write data into DynamoDB
 - Publish SNS notifications
 
-:contentReference[oaicite:5]{index=5}
+
 
 ### Screenshot
-
-```md
 ![Lambda Timeout Update](images/lambda-timeout-update.png)
-```
 
 ---
 
@@ -1462,13 +1445,10 @@ The API request completed successfully and returned:
 Status Code: 200 OK
 ```
 
-This confirmed the Lambda function was now processing requests successfully. :contentReference[oaicite:6]{index=6}
+This confirmed the Lambda function was now processing requests successfully.
 
 ### Screenshot
-
-```md
 ![API Gateway Success Response](images/api-gateway-success-response.png)
-```
 
 ---
 
@@ -1485,13 +1465,10 @@ Inside the `ContactFormSubmissions` table, I confirmed:
 - Timestamp values were populated
 - User submission data was stored successfully
 
-This confirmed the IAM permission fix and UUID solution were working correctly. :contentReference[oaicite:7]{index=7}
+This confirmed the IAM permission fix and UUID solution were working correctly. 
 
 ### Screenshot
-
-```md
 ![DynamoDB Successful Insert](images/dynamodb-successful-insert.png)
-```
 
 ---
 
@@ -1509,13 +1486,11 @@ I received a new email notification containing:
 
 from the test contact form submission.
 
-This confirmed the SNS publish permissions and subscription configuration were functioning correctly. :contentReference[oaicite:8]{index=8}
+This confirmed the SNS publish permissions and subscription configuration were functioning correctly. 
 
 ### Screenshot
-
-```md
 ![SNS Email Notification](images/sns-email-notification.png)
-```
+
 
 ---
 
@@ -1541,7 +1516,7 @@ This troubleshooting exercise demonstrated several common issues found in AWS se
    - Increased execution timeout for reliability
 ```
 
-These fixes successfully restored full communication between all AWS services in the architecture. :contentReference[oaicite:9]{index=9}
+These fixes successfully restored full communication between all AWS services in the architecture.
 
 ---
 
@@ -1560,3 +1535,37 @@ After completing all fixes and validation testing, the serverless contact form w
 ```
 
 This project provided hands-on experience troubleshooting and restoring a production-style AWS serverless application.
+
+---
+
+# Project Summary
+
+In this project, I successfully diagnosed and fixed a broken serverless contact form application, gaining hands-on experience troubleshooting AWS services in a real-world cloud support scenario.
+
+Throughout the investigation, I analyzed service integrations, identified root causes, and restored full functionality across the serverless architecture.
+
+---
+
+# Key Achievements
+
+```bash
+✓ Identified and resolved multiple failure points across a serverless stack
+✓ Applied diagnostic techniques using CloudWatch Logs and IAM analysis
+✓ Fixed IAM permission issues and Lambda dependency problems
+✓ Verified complete data flow between API Gateway, Lambda, DynamoDB, and SNS
+✓ Restored full end-to-end functionality of the contact form workflow
+```
+
+---
+
+# Key Skills Developed
+
+```bash
+✓ AWS service integration in serverless architectures
+✓ Least-privilege IAM policy implementation
+✓ CloudWatch log analysis and troubleshooting
+✓ Lambda dependency management
+✓ End-to-end testing across cloud services
+✓ Serverless workflow debugging and validation
+```
+---
