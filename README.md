@@ -923,7 +923,7 @@ In this section, I performed a full end-to-end analysis of the serverless archit
 By systematically reviewing each AWS service and verifying how they interacted with one another, I was able to build a complete picture of the architecture and identify the configuration, dependency, and permission issues preventing the application from functioning correctly.
 ---
 
-# 🏗 Step 1: Reviewing the Serverless Architecture
+# Step 1: Reviewing the Serverless Architecture
 
 Before troubleshooting each service individually, I mapped out how the architecture was expected to function.
 
@@ -945,7 +945,7 @@ This helped me identify every stage where failures could occur within the workfl
 
 ---
 
-# 🌐 Step 2: Verifying API Gateway Configuration
+# Step 2: Verifying API Gateway Configuration
 
 I first verified that API Gateway was properly configured and correctly integrated with Lambda.
 
@@ -996,7 +996,7 @@ Next, I reviewed the deployment stage configuration.
 
 ---
 
-# 🗄 Step 3: Verifying DynamoDB Configuration
+# Step 3: Verifying DynamoDB Configuration
 
 Next, I reviewed the DynamoDB table configuration used for storing contact form submissions.
 
@@ -1031,7 +1031,7 @@ The table returned zero items, confirming that Lambda was not successfully writi
 
 ---
 
-# 📧 Step 4: Verifying SNS Topic and Subscription
+# Step 4: Verifying SNS Topic and Subscription
 
 I reviewed the SNS topic configuration and subscription status.
 
@@ -1070,7 +1070,7 @@ Since I had already confirmed the SNS subscription earlier in the lab, email del
 
 ---
 
-# 🔐 Step 5: Analyzing IAM Role Permissions
+# Step 5: Analyzing IAM Role Permissions
 
 Next, I reviewed the Lambda execution role permissions.
 
@@ -1125,7 +1125,7 @@ This confirmed the Lambda function lacked permissions required to:
 
 ---
 
-# 📦 Step 6: Reviewing Lambda Dependencies
+# Step 6: Reviewing Lambda Dependencies
 
 I returned to the Lambda function code to investigate dependency-related issues.
 
@@ -1146,10 +1146,7 @@ Error: Cannot find module 'uuid'
 ```
 
 ### Screenshot
-
-```md
 ![Lambda UUID Dependency](images/lambda-uuid-dependency.png)
-```
 
 ---
 
@@ -1163,7 +1160,7 @@ but the dependency was not included in the deployment package.
 
 ---
 
-# ⚙️ Step 7: Verifying Environment Variables
+# Step 7: Verifying Environment Variables
 
 Next, I verified the Lambda environment variables.
 
@@ -1177,17 +1174,14 @@ SNS_TOPIC_ARN
 
 The ARN value matched the SNS topic configured earlier in the architecture.
 
-This confirmed the issue was not related to Lambda environment variables. :contentReference[oaicite:9]{index=9}
+This confirmed the issue was not related to Lambda environment variables.
 
 ### Screenshot
-
-```md
-![Lambda Environment Variables](images/lambda-environment-variables.png)
-```
+![Lambda Environment Variables](images/lambda-environment-variables2.png)
 
 ---
 
-# 📋 Step 8: Creating a Full Architecture Issue Report
+# Step 8: Creating a Full Architecture Issue Report
 
 After verifying every component of the serverless workflow, I compiled a full architecture issue report.
 
@@ -1205,13 +1199,14 @@ After verifying every component of the serverless workflow, I compiled a full ar
    - Impact: Lambda initialization failure
 
 3. Lambda IAM Role
-   - Status: Missing required permissions
-   - Missing dynamodb:PutItem permission
-   - Missing sns:Publish permission
+   - Status: Insufficient permissions identified
+   - Only AWSLambdaBasicExecutionRole attached
+   - No DynamoDB or SNS permissions configured
+   - Potential Impact: Lambda cannot write to DynamoDB or publish to SNS
 
 4. DynamoDB Table
    - Status: Correctly configured
-   - No records inserted due to Lambda failures
+   - No records inserted due to Lambda execution failure
 
 5. SNS Topic and Subscription
    - Status: Correctly configured
@@ -1221,12 +1216,9 @@ After verifying every component of the serverless workflow, I compiled a full ar
    - Status: Correctly configured
    - SNS_TOPIC_ARN value verified
 ```
-
-:contentReference[oaicite:10]{index=10}
-
 ---
 
-# ✅ Next Steps
+# Next Steps
 
 With all architecture issues successfully identified, the next phase will focus on applying fixes to restore full serverless functionality.
 
